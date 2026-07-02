@@ -1,536 +1,311 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { 
-  Search, 
-  ShoppingBag, 
-  MessageCircle, 
-  X, 
-  ChevronRight, 
-  ShieldCheck, 
-  Star, 
-  ArrowRight,
-  Menu,
-  CheckCircle,
-  Lock,
-  Heart,
-  MapPin,
-  Phone,
-  Mail,
-  UserPlus,
-  Gift,
-  Zap,
-  Ticket
-} from 'lucide-react';
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#6f2a42">
+    <meta name="description" content="Apple of My Eye menghadirkan busana pilihan untuk ibu, anak, dan keluarga—hangat, nyaman, dan mudah dipadukan.">
+    <meta name="robots" content="index,follow">
+    <meta property="og:title" content="Apple of My Eye — Cerita hangat dalam setiap gaya">
+    <meta property="og:description" content="Koleksi pilihan untuk momen berharga bersama keluarga.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/images/header-banner-1.png">
+    <title>Apple of My Eye — Family Fashion Store</title>
+    <link rel="icon" href="/images/icon-apple.png" type="image/png">
+    <link rel="stylesheet" href="/css/store.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content" data-i18n="skip">Lewati ke konten</a>
 
-// Brand Colors from Logo
-const COLORS = {
-  red: "#D32F2F",
-  blue: "#4A90E2",
-  green: "#50B83C",
-  yellow: "#F9D423",
-  orange: "#F5A623",
-};
-
-// Hero Slider Content
-const HERO_SLIDES = [
-  {
-    img: "https://images.unsplash.com/photo-1444840535719-195841cb6e2b?auto=format&fit=crop&q=80&w=2400",
-    label: "Premium Duo Collection"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&q=80&w=2400",
-    label: "Spring Arrivals"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1543332164-6e82f355badc?auto=format&fit=crop&q=80&w=2400",
-    label: "Matching Essentials"
-  }
-];
-
-// Mock Data
-const PRODUCTS = [
-  { id: 1, name: "Scarlet Silk Mom Dress", category: "Mom", price: 129, img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600", tag: "Best Seller", color: COLORS.red },
-  { id: 2, name: "Mini-Me Crimson Romper", category: "Kids", price: 45, img: "https://images.unsplash.com/photo-1519689689253-c960191837f2?auto=format&fit=crop&q=80&w=600", tag: "New Arrival", color: COLORS.blue },
-  { id: 3, name: "Ruby Knit Cardigan", category: "Mom", price: 89, img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=600", tag: "Essential", color: COLORS.green },
-  { id: 4, name: "Apple Print Pajama Set", category: "Kids", price: 38, img: "https://images.unsplash.com/photo-1513273159383-c2117565b434?auto=format&fit=crop&q=80&w=600", tag: "Trending", color: COLORS.yellow },
-  { id: 5, name: "Classic Red Overalls", category: "Kids", price: 52, img: "https://images.unsplash.com/photo-1503910368127-b4288eca295a?auto=format&fit=crop&q=80&w=600", tag: "Gift Idea", color: COLORS.orange },
-];
-
-const App = () => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [cart, setCart] = useState([]);
-  const [activeFilter, setActiveFilter] = useState("All");
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [chatMessages, setChatMessages] = useState([
-    { role: 'admin', text: 'Welcome to AppleOfMyEye Secure Concierge. How can I help you find the perfect fit today?' }
-  ]);
-  const [currentMessage, setCurrentMessage] = useState("");
-
-  // Automatic Banner Scroll Logic
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-        setIsTransitioning(false);
-      }, 600); // Effect duration
-    }, 5000); // 5 seconds per slide
-    return () => clearInterval(timer);
-  }, []);
-
-  const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter(p => {
-      const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            p.category.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesFilter = activeFilter === "All" || p.category === activeFilter;
-      return matchesSearch && matchesFilter;
-    });
-  }, [searchQuery, activeFilter]);
-
-  const addToCart = (product) => {
-    setCart([...cart, product]);
-    setIsCartOpen(true);
-  };
-
-  const removeFromCart = (index) => {
-    const newCart = [...cart];
-    newCart.splice(index, 1);
-    setCart(newCart);
-  };
-
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!currentMessage.trim()) return;
-    setChatMessages([...chatMessages, { role: 'user', text: currentMessage }]);
-    setCurrentMessage("");
-    setTimeout(() => {
-      setChatMessages(prev => [...prev, { role: 'admin', text: 'Looking into those sizing charts for you. One moment while I verify our current stock.' }]);
-    }, 1000);
-  };
-
-  const handleRegister = (e) => {
-    e.preventDefault();
-    setIsRegistered(true);
-    setTimeout(() => {
-      setIsRegisterOpen(false);
-      setIsRegistered(false);
-    }, 2000);
-  };
-
-  const cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
-
-  return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-red-100 selection:text-red-700" style={{ fontFamily: '"Poppins", sans-serif' }}>
-      <style>
-        {`
-          @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800&display=swap');
-          
-          .font-heading {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 800;
-          }
-
-          .no-scrollbar::-webkit-scrollbar {
-            display: none;
-          }
-
-          .brand-dot {
-            transition: filter 0.6s ease, background-color 0.6s ease;
-          }
-          .brand-dot.desaturate {
-            filter: grayscale(100%) brightness(1.2);
-            opacity: 0.5;
-          }
-        `}
-      </style>
-
-      {/* --- Header --- */}
-      <header className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 h-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center justify-between gap-4">
-          
-          {/* Logo Section */}
-          <div className="flex items-center group cursor-pointer flex-shrink-0">
-            <div className="relative h-20 md:h-24 transition-transform group-hover:scale-105">
-              <img 
-                src="logo-apple-01.png" 
-                alt="Apple of My Eye Full Logo" 
-                className="h-full w-auto object-contain"
-                onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-              <div className="hidden h-full items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-[#D32F2F] flex items-center justify-center text-white font-bold text-xl">A</div>
-                <span className="font-heading uppercase tracking-tighter text-xl italic">Apple<span className="text-[#D32F2F]">OfMyEye</span></span>
-              </div>
-            </div>
-          </div>
-
-          {/* Search Bar */}
-          <div className="flex-grow max-w-md lg:max-w-xl relative hidden md:block">
-            <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Search matching sets..." 
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-11 pr-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-            <button 
-              onClick={() => setIsRegisterOpen(true)}
-              className="hidden lg:flex items-center gap-2 px-5 py-2.5 rounded-xl border-2 border-slate-100 font-bold text-xs hover:border-slate-900 transition-all"
-            >
-              <UserPlus className="w-4 h-4 text-[#D32F2F]" />
-              Join Member
-            </button>
-            <button 
-              onClick={() => setIsChatOpen(true)}
-              className="p-3 hover:bg-slate-50 rounded-2xl transition-all relative group"
-            >
-              <MessageCircle className="w-6 h-6 text-slate-700 group-hover:text-green-600" />
-              <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></span>
-            </button>
-            <button 
-              onClick={() => setIsCartOpen(true)}
-              className="p-3 hover:bg-slate-50 rounded-2xl transition-all relative group"
-            >
-              <ShoppingBag className="w-6 h-6 text-slate-700 group-hover:text-blue-600" />
-              {cart.length > 0 && (
-                <span className="absolute top-1 right-1 bg-[#D32F2F] text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full">
-                  {cart.length}
-                </span>
-              )}
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="pt-28">
-        
-        {/* --- Hero Section --- */}
-        <section className="relative h-[85vh] flex items-center overflow-hidden bg-slate-100">
-          {HERO_SLIDES.map((slide, idx) => (
-            <div 
-              key={idx}
-              className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`}
-            >
-              <img src={slide.img} className="w-full h-full object-cover" alt={slide.label} />
-            </div>
-          ))}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent"></div>
-          <div className="relative max-w-7xl mx-auto px-6 w-full z-10">
-            <div className="max-w-2xl">
-              <div className="flex gap-2 mb-6">
-                <span className={`brand-dot w-3 h-3 rounded-full bg-red-500 ${isTransitioning ? 'desaturate' : ''}`}></span>
-                <span className={`brand-dot w-3 h-3 rounded-full bg-blue-500 ${isTransitioning ? 'desaturate' : ''}`}></span>
-                <span className={`brand-dot w-3 h-3 rounded-full bg-green-500 ${isTransitioning ? 'desaturate' : ''}`}></span>
-                <span className={`brand-dot w-3 h-3 rounded-full bg-yellow-500 ${isTransitioning ? 'desaturate' : ''}`}></span>
-              </div>
-              <span className="inline-block text-[#D32F2F] font-bold tracking-widest text-[10px] md:text-xs mb-4 uppercase">
-                {HERO_SLIDES[currentSlide].label}
-              </span>
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-heading leading-[1.1] tracking-tighter mb-8 italic uppercase transition-all duration-700">
-                STYLE <br />THAT <br />
-                <span className={`transition-colors duration-500 ${isTransitioning ? 'text-slate-400' : 'text-[#D32F2F]'}`}>GROWS</span> <br />WITH YOU
-              </h2>
-              <p className="text-base md:text-lg text-slate-700 mb-10 max-w-md leading-relaxed font-semibold">
-                Premium matching essentials for mothers and their little apples. 
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <button 
-                   onClick={() => setIsRegisterOpen(true)}
-                   className="bg-slate-900 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:bg-black transition-all transform hover:-translate-y-1"
-                >
-                  Join the Inner Circle
-                </button>
-                <div className="flex items-center gap-4 px-6 py-5 rounded-2xl bg-white/80 backdrop-blur-md border-2 border-slate-100 font-bold cursor-pointer hover:bg-white transition-all text-sm md:text-base">
-                  <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-                  <span className="text-slate-900">4.9/5 Happy Mamas</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* --- Membership Perks --- */}
-        <section className="py-24 bg-white overflow-hidden relative">
-          <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="order-2 lg:order-1">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                 {[
-                   { icon: <Zap className="text-blue-500" />, title: "Early Access", desc: "Shop drops 24 hours before public release." },
-                   { icon: <Gift className="text-[#D32F2F]" />, title: "Birthday Gifts", desc: "Special surprises for you and your little apple." },
-                   { icon: <Ticket className="text-green-500" />, title: "Member Only Deals", desc: "Exclusive pricing on matching bundles." },
-                   { icon: <CheckCircle className="text-orange-500" />, title: "Fast Checkout", desc: "Save secure profiles for 1-click shopping." },
-                 ].map((perk, i) => (
-                   <div key={i} className="p-8 bg-slate-50 rounded-[32px] hover:bg-white hover:shadow-xl transition-all duration-300 border border-transparent hover:border-slate-100 group">
-                      <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                        {perk.icon}
-                      </div>
-                      <h4 className="font-bold mb-2">{perk.title}</h4>
-                      <p className="text-xs text-slate-500 leading-relaxed">{perk.desc}</p>
-                   </div>
-                 ))}
-              </div>
-            </div>
-            <div className="order-1 lg:order-2">
-              <h2 className="text-4xl md:text-5xl font-heading uppercase italic tracking-tighter mb-6 leading-tight">
-                MORE THAN <br />A <span className="text-[#D32F2F]">MEMBERSHIP</span>
-              </h2>
-              <p className="text-slate-600 mb-8 font-medium leading-relaxed">Join 50,000+ modern mothers in our exclusive inner circle. We believe every matching moment is a memory worth celebrating.</p>
-              <button 
-                onClick={() => setIsRegisterOpen(true)}
-                className="inline-flex items-center gap-3 text-slate-900 font-bold border-b-2 border-slate-900 pb-2 hover:gap-5 transition-all"
-              >
-                Create your secure account <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* --- Duo Grid --- */}
-        <section className="pb-24 max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="group relative aspect-square overflow-hidden rounded-[40px] cursor-pointer" onClick={() => setActiveFilter("Mom")}>
-              <img src="https://images.unsplash.com/photo-1590393222627-9c884638a16f?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="For Mom" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-              <div className="absolute bottom-12 left-12 text-white">
-                <span className="inline-block px-4 py-1 bg-blue-500 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4">Elite Silk</span>
-                <h3 className="text-4xl font-heading uppercase italic tracking-tighter">For Mom</h3>
-              </div>
-            </div>
-            <div className="group relative aspect-square overflow-hidden rounded-[40px] cursor-pointer" onClick={() => setActiveFilter("Kids")}>
-              <img src="https://images.unsplash.com/photo-1544126592-807daa215a75?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="For Kids" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
-              <div className="absolute bottom-12 left-12 text-white">
-                <span className="inline-block px-4 py-1 bg-orange-500 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4">Play Proof</span>
-                <h3 className="text-4xl font-heading uppercase italic tracking-tighter">For Kids</h3>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* --- Best Sellers --- */}
-        <section className="bg-slate-50 py-24">
-          <div className="max-w-7xl mx-auto px-6">
-            <h2 className="text-4xl font-heading uppercase tracking-tighter italic mb-12">Top Picks</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-              {filteredProducts.map((p) => (
-                <div key={p.id} className="group cursor-pointer">
-                  <div className="relative aspect-square overflow-hidden rounded-[24px] bg-white shadow-sm hover:shadow-2xl transition-all duration-300">
-                    <img src={p.img} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt={p.name} />
-                    <button 
-                       onClick={() => addToCart(p)}
-                       className="absolute bottom-4 inset-x-4 py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px] opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0"
-                       style={{ backgroundColor: p.color, color: 'white' }}
-                    >
-                      Quick Add
-                    </button>
-                  </div>
-                  <div className="mt-6 px-2 flex justify-between">
-                    <div>
-                      <h4 className="font-bold text-slate-800 text-sm leading-tight">{p.name}</h4>
-                      <p className="text-[9px] font-bold uppercase text-slate-400 mt-1">{p.category}</p>
-                    </div>
-                    <span className="font-extrabold text-base">${p.price}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* --- Secure Chat CTA --- */}
-        <section className="py-24 max-w-5xl mx-auto px-6">
-          <div className="bg-slate-900 rounded-[48px] p-16 text-white text-center relative overflow-hidden shadow-2xl">
-            <div className="absolute top-[-10%] left-[-5%] w-64 h-64 bg-blue-500 rounded-full blur-[120px] opacity-20"></div>
-            <div className="absolute bottom-[-10%] right-[-5%] w-64 h-64 bg-red-500 rounded-full blur-[120px] opacity-20"></div>
-            <h2 className="text-4xl md:text-5xl font-heading mb-6 uppercase italic tracking-tighter text-white">Talk to a Stylist</h2>
-            <p className="text-slate-400 mb-10 text-lg max-w-lg mx-auto font-medium">Sizing help or fabric questions? Start a secure chat with our concierge.</p>
-            <button onClick={() => setIsChatOpen(true)} className="bg-white text-slate-900 font-bold px-12 py-5 rounded-3xl inline-flex items-center gap-4 hover:scale-105 transition-all shadow-xl text-sm">
-              <MessageCircle className="w-5 h-5 text-green-600" />
-              Launch Secure Chat
-            </button>
-          </div>
-        </section>
-      </main>
-
-      {/* --- Footer --- */}
-      <footer className="bg-white border-t border-slate-100 pt-24 pb-12">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-16 mb-24">
-            <div className="lg:col-span-2">
-               <img src="logo-apple-01.png" className="h-16 mb-8" alt="Footer Logo" />
-               <p className="text-slate-500 max-w-sm mb-8 font-semibold leading-relaxed text-xs">Elevating the bond between mother and child through sustainable fashion.</p>
-            </div>
-            <div>
-              <h4 className="font-bold uppercase text-[10px] tracking-widest mb-8">Connect</h4>
-              <ul className="space-y-5 text-slate-500 font-bold text-xs">
-                <li className="flex items-start gap-3"><MapPin className="w-4 h-4 text-red-500" /> 123 Orchard Lane, NY</li>
-                <li className="flex items-center gap-3"><Phone className="w-4 h-4 text-blue-500" /> +1 (212) 555-0198</li>
-                <li className="flex items-center gap-3"><Mail className="w-4 h-4 text-green-500" /> hello@appleofmyeye.com</li>
-              </ul>
-            </div>
-          </div>
-          <div className="pt-10 border-t border-slate-100 flex justify-between items-center">
-            <p className="text-[9px] text-slate-400 font-bold uppercase">© 2024 Apple Of My Eye.</p>
-          </div>
-        </div>
-      </footer>
-
-      {/* --- Registration Modal --- */}
-      {isRegisterOpen && (
-        <>
-          <div className="fixed inset-0 bg-slate-900/60 z-[200] backdrop-blur-md" onClick={() => setIsRegisterOpen(false)}></div>
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white z-[210] rounded-[48px] shadow-2xl p-10 overflow-hidden animate-in zoom-in-95 duration-300">
-            {isRegistered ? (
-              <div className="text-center py-10 animate-in fade-in duration-500">
-                 <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle className="w-10 h-10 text-green-500" />
-                 </div>
-                 <h3 className="text-2xl font-heading uppercase italic mb-2">Welcome to the Club!</h3>
-                 <p className="text-slate-500 text-sm">Your membership is now active. Check your email for a 15% discount code.</p>
-              </div>
-            ) : (
-              <>
-                <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-2xl font-heading uppercase italic">Join Member</h3>
-                  <button onClick={() => setIsRegisterOpen(false)} className="p-2 hover:bg-slate-50 rounded-xl"><X className="w-6 h-6" /></button>
-                </div>
-                <p className="text-xs text-slate-500 mb-8 font-medium">Create your secure account to save your sizes and access member-only matching sets.</p>
-                <form onSubmit={handleRegister} className="space-y-5">
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase font-black tracking-widest text-slate-400">Full Name</label>
-                    <input type="text" required placeholder="Jane Doe" className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-[#D32F2F]/20" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase font-black tracking-widest text-slate-400">Email Address</label>
-                    <input type="email" required placeholder="jane@example.com" className="w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-[#D32F2F]/20" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase font-black tracking-widest text-slate-400">Preferred Collection</label>
-                    <div className="grid grid-cols-3 gap-3">
-                      {['Mom', 'Kids', 'Both'].map(type => (
-                        <button key={type} type="button" className="py-3 rounded-xl border border-slate-100 text-[10px] font-bold uppercase hover:border-[#D32F2F] hover:text-[#D32F2F] transition-all">
-                          {type}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <button type="submit" className="w-full bg-slate-900 text-white py-5 rounded-3xl font-bold uppercase tracking-widest text-xs hover:bg-black transition-all shadow-xl mt-4">
-                    Complete Registration
-                  </button>
-                  <p className="text-[8px] text-center text-slate-400 uppercase font-bold tracking-[0.2em] mt-4 flex items-center justify-center gap-2">
-                    <Lock className="w-3 h-3" /> Encrypted Member Vault
-                  </p>
-                </form>
-              </>
-            )}
-          </div>
-        </>
-      )}
-
-      {/* --- Cart Sidebar --- */}
-      {isCartOpen && (
-        <>
-          <div className="fixed inset-0 bg-slate-900/60 z-[100] backdrop-blur-sm" onClick={() => setIsCartOpen(false)}></div>
-          <div className="fixed top-0 right-0 w-full max-w-md h-full bg-white z-[110] shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
-            <div className="p-8 border-b border-slate-100 flex items-center justify-between">
-              <h3 className="text-xl font-heading uppercase italic">Your Bag <span className="text-blue-500">({cart.length})</span></h3>
-              <button onClick={() => setIsCartOpen(false)} className="p-2 hover:bg-slate-50 rounded-2xl transition-all"><X className="w-6 h-6" /></button>
-            </div>
-            <div className="flex-grow overflow-y-auto p-8 space-y-8">
-              {cart.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-4 opacity-30">
-                  <ShoppingBag className="w-16 h-16" />
-                  <p className="font-bold uppercase tracking-widest text-[10px]">Bag is empty</p>
-                </div>
-              ) : (
-                cart.map((item, idx) => (
-                  <div key={idx} className="flex gap-6 items-center">
-                    <img src={item.img} className="w-20 h-20 object-cover rounded-2xl shadow-sm" alt="" />
-                    <div className="flex-grow">
-                      <div className="flex justify-between items-start mb-1">
-                        <h4 className="font-bold text-slate-800 text-xs">{item.name}</h4>
-                        <button onClick={() => removeFromCart(idx)}><X className="w-4 h-4 text-slate-300 hover:text-red-500" /></button>
-                      </div>
-                      <p className="font-extrabold text-lg">${item.price}</p>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-            <div className="p-8 bg-slate-50 border-t border-slate-100 rounded-t-[40px]">
-              <div className="flex justify-between items-end mb-8">
-                <div>
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Estimated Total</p>
-                  <span className="text-2xl font-extrabold">${cartTotal}</span>
-                </div>
-              </div>
-              <button className="w-full bg-slate-900 text-white py-6 rounded-3xl font-bold uppercase tracking-widest text-xs hover:bg-black transition-all shadow-xl">
-                Secure Checkout
-              </button>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* --- Secure Chat Portal --- */}
-      {isChatOpen && (
-        <>
-          <div className="fixed inset-0 bg-slate-900/40 z-[100] backdrop-blur-sm md:hidden" onClick={() => setIsChatOpen(false)}></div>
-          <div className="fixed bottom-0 right-0 md:bottom-10 md:right-10 w-full md:w-[420px] h-full md:h-[650px] bg-white z-[110] shadow-2xl md:rounded-[40px] overflow-hidden flex flex-col border border-slate-200 animate-in zoom-in-95 duration-300">
-            <div className="bg-slate-900 p-8 text-white">
-              <div className="flex justify-between items-start mb-6 relative z-10">
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <div className="w-14 h-14 rounded-2xl bg-white p-1 flex items-center justify-center overflow-hidden">
-                       <img src="logo-apple-01.png" className="w-full h-full object-contain" alt="" />
-                    </div>
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-4 border-slate-900"></div>
-                  </div>
-                  <div>
-                    <h4 className="font-heading uppercase tracking-tighter text-lg italic leading-none mb-1">Stylist Hub</h4>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest flex items-center gap-1">
-                      <Lock className="w-2.5 h-2.5" /> Encrypted
-                    </p>
-                  </div>
-                </div>
-                <button onClick={() => setIsChatOpen(false)} className="text-slate-400 hover:text-white transition-colors"><X className="w-6 h-6" /></button>
-              </div>
-            </div>
-            <div className="flex-grow overflow-y-auto p-8 space-y-6 bg-slate-50">
-              {chatMessages.map((msg, i) => (
-                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] p-5 rounded-[28px] text-sm font-medium shadow-sm leading-relaxed ${
-                    msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white text-slate-800 border border-slate-200 rounded-tl-none'
-                  }`}>
-                    {msg.text}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <form onSubmit={handleSendMessage} className="p-6 bg-white border-t border-slate-100 flex gap-3">
-              <input type="text" value={currentMessage} onChange={(e) => setCurrentMessage(e.target.value)} placeholder="Ask about sizing..." className="flex-grow bg-slate-100 border-none rounded-2xl px-5 py-4 text-sm font-medium" />
-              <button type="submit" className="bg-slate-900 text-white p-4 rounded-2xl hover:bg-black transition-colors"><ArrowRight className="w-6 h-6" /></button>
-            </form>
-          </div>
-        </>
-      )}
-
+    <div class="announcement" role="status">
+      <div class="container announcement__inner">
+        <p data-i18n="announcement">Gratis biaya layanan untuk pemesanan perdana</p>
+        <a href="#contact" data-i18n="announcementCta">Tanya admin</a>
+      </div>
     </div>
-  );
-};
 
-export default App;
+    <header class="site-header" id="top">
+      <div class="container site-header__inner">
+        <a class="brand brand--header" href="#home" aria-label="Apple of My Eye — Beranda">
+          <img class="brand__logo brand__logo--header" src="/images/logo-apple-01.png" alt="Apple of My Eye" width="1182" height="1182">
+        </a>
+
+        <button class="icon-button menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+          <span class="sr-only" data-i18n="openMenu">Buka menu</span>
+          <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+        </button>
+
+        <nav class="primary-nav" id="primary-nav" aria-label="Navigasi utama">
+          <a href="#home" data-i18n="navHome">Beranda</a>
+          <a href="#shop" data-i18n="navShop">Koleksi</a>
+          <a href="#story" data-i18n="navStory">Cerita Kami</a>
+          <a href="#why-us" data-i18n="navWhy">Mengapa Kami</a>
+          <a href="#contact" data-i18n="navContact">Kontak</a>
+        </nav>
+
+        <div class="header-actions">
+          <div class="language-switch" aria-label="Pilihan bahasa">
+            <button type="button" data-lang="id" aria-label="Bahasa Indonesia" aria-pressed="true"><img src="/images/flag-ina.png" alt="" width="16" height="16"><span>ID</span></button>
+            <button type="button" data-lang="en" aria-label="English" aria-pressed="false"><img src="/images/flag-uk.png" alt="" width="16" height="8"><span>EN</span></button>
+          </div>
+          <button class="cart-button" type="button" data-open-cart aria-label="Buka keranjang">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 3h2l2.4 11.2a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H7M10 20h.01M17 20h.01"/></svg>
+            <span data-i18n="cart">Keranjang</span>
+            <span class="cart-count" data-cart-count>0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero hero--banner" id="home">
+        <div class="container hero__grid">
+          <div class="hero__content">
+            <p class="eyebrow" data-i18n="heroEyebrow">Untuk momen kecil yang paling berarti</p>
+            <h1 data-i18n="heroTitle">Cerita hangat,<br><em>dibawa dalam gaya.</em></h1>
+            <p class="hero__lead" data-i18n="heroLead">Koleksi nyaman untuk ibu, anak, dan keluarga—dipilih agar setiap kebersamaan terasa sedikit lebih istimewa.</p>
+            <div class="hero__actions">
+              <a class="button button--primary" href="#shop" data-i18n="shopNow">Belanja koleksi</a>
+              <a class="button button--ghost" href="#story" data-i18n="meetUs">Kenali kami</a>
+            </div>
+            <dl class="hero__stats" aria-label="Ringkasan toko">
+              <div><dt>9+</dt><dd data-i18n="statCollection">Koleksi pilihan</dd></div>
+              <div><dt>4.9</dt><dd data-i18n="statRating">Pengalaman hangat</dd></div>
+              <div><dt>&lt; 1h</dt><dd data-i18n="statResponse">Respons admin</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="promise-strip" aria-label="Keunggulan toko">
+        <div class="container promise-strip__grid">
+          <article><span aria-hidden="true">◇</span><div><h2 data-i18n="promiseQuality">Pilihan berkualitas</h2><p data-i18n="promiseQualityText">Dikurasi untuk kenyamanan keluarga</p></div></article>
+          <article><span aria-hidden="true">♧</span><div><h2 data-i18n="promiseCare">Dikemas dengan hati</h2><p data-i18n="promiseCareText">Rapi, aman, dan siap menjadi hadiah</p></div></article>
+          <article><span aria-hidden="true">↗</span><div><h2 data-i18n="promiseDelivery">Pengiriman terpantau</h2><p data-i18n="promiseDeliveryText">Pilihan kurir tepercaya di Indonesia</p></div></article>
+          <article><span aria-hidden="true">☺</span><div><h2 data-i18n="promiseHelp">Admin yang membantu</h2><p data-i18n="promiseHelpText">Konsultasi ukuran lewat WhatsApp</p></div></article>
+        </div>
+      </section>
+
+      <section class="shop section" id="shop">
+        <div class="container">
+          <div class="section-heading section-heading--split">
+            <div>
+              <p class="eyebrow" data-i18n="shopEyebrow">Koleksi kami</p>
+              <h2 data-i18n="shopTitle">Temukan yang terasa seperti <em>kalian.</em></h2>
+            </div>
+            <p data-i18n="shopIntro">Busana dan aksesori yang mudah dipadukan untuk keseharian, perayaan, dan semua cerita di antaranya.</p>
+          </div>
+
+          <div class="catalog-toolbar">
+            <div class="category-filters" data-category-filters aria-label="Filter kategori"></div>
+            <label class="search-box">
+              <span class="sr-only" data-i18n="searchLabel">Cari produk</span>
+              <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+              <input type="search" data-product-search data-i18n-placeholder="searchPlaceholder" placeholder="Cari koleksi..." autocomplete="off">
+            </label>
+          </div>
+
+          <div class="catalog-status" aria-live="polite" data-catalog-status data-i18n="loading">Menyiapkan koleksi...</div>
+          <div class="product-grid" data-product-grid aria-live="polite"></div>
+          <div class="empty-state" data-empty-state hidden>
+            <span aria-hidden="true">♡</span>
+            <h3 data-i18n="emptyTitle">Belum menemukan yang dicari</h3>
+            <p data-i18n="emptyText">Coba kata lain atau lihat semua koleksi kami.</p>
+            <button class="button button--ghost" type="button" data-reset-filter data-i18n="showAll">Lihat semua</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="story section" id="story">
+        <div class="container story__grid">
+          <div class="story__visual">
+            <div class="story__arch"><img src="/images/summer-love.png" alt="Koleksi dress anak Apple of My Eye" loading="lazy" width="568" height="768"></div>
+            <blockquote class="story__quote">
+              <p data-i18n="storyQuote">“Karena yang paling kita sayangi pantas merasakan nyaman.”</p>
+              <cite>Apple of My Eye</cite>
+            </blockquote>
+          </div>
+          <div class="story__content">
+            <p class="eyebrow" data-i18n="storyEyebrow">Cerita Apple of My Eye</p>
+            <h2 data-i18n="storyTitle">Berawal dari rasa sayang yang ingin <em>dibawa ke mana-mana.</em></h2>
+            <p data-i18n="storyP1">Apple of My Eye lahir dari gagasan sederhana: pakaian keluarga seharusnya terasa nyaman, terlihat berkarakter, dan membuat momen bersama semakin berkesan.</p>
+            <p data-i18n="storyP2">Kami mengkurasi setiap koleksi dengan perhatian pada bahan, kemudahan bergerak, dan cara tiap item berpadu dengan kehidupan keluarga yang nyata.</p>
+            <a class="text-link" href="#why-us"><span data-i18n="storyCta">Lihat cara kami memilih koleksi</span><span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="values section" id="why-us">
+        <div class="container">
+          <div class="section-heading section-heading--center">
+            <p class="eyebrow" data-i18n="whyEyebrow">Mengapa berbelanja di sini</p>
+            <h2 data-i18n="whyTitle">Perhatian kecil yang membuat <em>perbedaan besar.</em></h2>
+          </div>
+          <div class="value-grid">
+            <article><span class="value-grid__number">01</span><div class="value-grid__icon" aria-hidden="true">✦</div><h3 data-i18n="valueOne">Nyaman lebih dulu</h3><p data-i18n="valueOneText">Koleksi dipilih agar nyaman mengikuti aktivitas keluarga sepanjang hari.</p></article>
+            <article><span class="value-grid__number">02</span><div class="value-grid__icon" aria-hidden="true">♡</div><h3 data-i18n="valueTwo">Gaya yang dekat</h3><p data-i18n="valueTwoText">Mudah dipadukan, terasa personal, dan tidak cepat kehilangan cerita.</p></article>
+            <article><span class="value-grid__number">03</span><div class="value-grid__icon" aria-hidden="true">✓</div><h3 data-i18n="valueThree">Informasi yang jelas</h3><p data-i18n="valueThreeText">Harga, ukuran, stok, dan total pesanan dihitung transparan.</p></article>
+            <article><span class="value-grid__number">04</span><div class="value-grid__icon" aria-hidden="true">☺</div><h3 data-i18n="valueFour">Dilayani manusia</h3><p data-i18n="valueFourText">Admin siap membantu memilih ukuran dan mengonfirmasi pesanan.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="testimonials section" aria-labelledby="testimonial-title">
+        <div class="container">
+          <div class="section-heading section-heading--center">
+            <p class="eyebrow" data-i18n="testimonialEyebrow">Kata mereka</p>
+            <h2 id="testimonial-title" data-i18n="testimonialTitle">Cerita yang ikut pulang bersama <em>koleksi kami.</em></h2>
+          </div>
+          <div class="testimonial-grid">
+            <article><div class="stars" aria-label="5 dari 5 bintang">★★★★★</div><p data-i18n="reviewOne">“Bahannya nyaman dan set ibu-anaknya terlihat manis tanpa berlebihan. Admin juga sabar membantu pilih ukuran.”</p><footer><strong>Rani A.</strong><span data-i18n="reviewOneMeta">Jakarta · Couple Collection</span></footer></article>
+            <article><div class="stars" aria-label="5 dari 5 bintang">★★★★★</div><p data-i18n="reviewTwo">“Paketnya rapi sekali, cocok langsung diberikan sebagai hadiah. Proses konfirmasinya juga cepat.”</p><footer><strong>Nadia P.</strong><span data-i18n="reviewTwoMeta">Bandung · Kids Collection</span></footer></article>
+            <article><div class="stars" aria-label="5 dari 5 bintang">★★★★★</div><p data-i18n="reviewThree">“Suka karena harga dan ongkirnya jelas sebelum pesan. Modelnya mudah dipakai ulang untuk banyak acara.”</p><footer><strong>Dita M.</strong><span data-i18n="reviewThreeMeta">Tangerang · Accessories</span></footer></article>
+          </div>
+          <p class="disclaimer" data-i18n="testimonialNote">Contoh testimoni untuk tampilan awal—ganti dengan ulasan pelanggan terverifikasi sebelum publikasi.</p>
+        </div>
+      </section>
+
+      <section class="faq section" id="faq">
+        <div class="container faq__grid">
+          <div>
+            <p class="eyebrow" data-i18n="faqEyebrow">Pertanyaan umum</p>
+            <h2 data-i18n="faqTitle">Sebelum koleksi favoritmu <em>pulang.</em></h2>
+            <p data-i18n="faqIntro">Masih ragu soal ukuran atau pengiriman? Admin kami senang membantu lewat WhatsApp.</p>
+            <a class="text-link" href="#contact"><span data-i18n="askAdmin">Tanya admin</span><span aria-hidden="true">→</span></a>
+          </div>
+          <div class="faq-list">
+            <details><summary data-i18n="faqOneQ">Bagaimana cara memilih ukuran?</summary><p data-i18n="faqOneA">Buka detail produk untuk melihat pilihan ukuran. Untuk rekomendasi lebih personal, kirim usia dan perkiraan ukuran badan melalui WhatsApp.</p></details>
+            <details><summary data-i18n="faqTwoQ">Kapan pesanan saya diproses?</summary><p data-i18n="faqTwoA">Pesanan diproses setelah pembayaran dan ketersediaan stok dikonfirmasi oleh admin.</p></details>
+            <details><summary data-i18n="faqThreeQ">Apakah bisa menukar ukuran?</summary><p data-i18n="faqThreeA">Kebijakan penukaran perlu dikonfirmasi admin sebelum pembelian. Produk harus belum dipakai dan tag tetap terpasang.</p></details>
+            <details><summary data-i18n="faqFourQ">Apakah ongkir sudah final?</summary><p data-i18n="faqFourA">Ongkir pada checkout adalah estimasi awal. Admin akan mengonfirmasi biaya sesuai alamat, berat paket, dan layanan kurir.</p></details>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact section" id="contact">
+        <div class="container contact__card">
+          <div>
+            <p class="eyebrow" data-i18n="contactEyebrow">Kami siap membantu</p>
+            <h2 data-i18n="contactTitle">Pilih dengan tenang.<br><em>Kami temani.</em></h2>
+            <p data-i18n="contactText">Tanyakan ukuran, stok, paket hadiah, atau kebutuhan couple keluarga langsung kepada admin.</p>
+          </div>
+          <div class="contact__actions">
+            <a class="button button--light" href="#" data-whatsapp-link target="_blank" rel="noopener noreferrer" data-i18n="chatWhatsapp">Chat via WhatsApp</a>
+            <a class="contact__email" href="mailto:hello@appleofmyeye.id" data-store-email>hello@appleofmyeye.id</a>
+            <p data-i18n="responseTime">Senin–Sabtu · 09.00–18.00 WIB</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__grid">
+        <div>
+          <a class="brand brand--footer" href="#home" aria-label="Apple of My Eye — Beranda">
+            <img class="brand__logo brand__logo--footer" src="/images/footer-logo.png" alt="Apple of My Eye" width="477" height="114">
+          </a>
+          <p data-i18n="footerAbout">Koleksi penuh perhatian untuk keluarga dan semua momen yang ingin dikenang.</p>
+        </div>
+        <div><h2 data-i18n="footerExplore">Jelajahi</h2><a href="#shop" data-i18n="navShop">Koleksi</a><a href="#story" data-i18n="navStory">Cerita Kami</a><a href="#why-us" data-i18n="navWhy">Mengapa Kami</a><a href="#faq">FAQ</a></div>
+        <div><h2 data-i18n="footerHelp">Bantuan</h2><a href="#faq" data-i18n="sizeGuide">Panduan ukuran</a><a href="#faq" data-i18n="shippingInfo">Pengiriman</a><a href="#faq" data-i18n="exchangeInfo">Penukaran</a><a href="#contact" data-i18n="navContact">Kontak</a></div>
+        <div><h2 data-i18n="footerContact">Hubungi kami</h2><a href="#" data-whatsapp-link target="_blank" rel="noopener noreferrer">WhatsApp</a><a href="mailto:hello@appleofmyeye.id" data-store-email>hello@appleofmyeye.id</a><span data-store-location>Jakarta, Indonesia</span><span data-store-instagram>@appleofmyeye.id</span></div>
+      </div>
+      <div class="container site-footer__bottom"><p>© <span data-current-year></span> Apple of My Eye. <span data-i18n="rights">Hak cipta dilindungi.</span></p><p data-i18n="footerNote">Dibangun dengan perhatian, seperti koleksi kami.</p></div>
+    </footer>
+
+    <div class="drawer-backdrop" data-drawer-backdrop hidden></div>
+    <aside class="cart-drawer" data-cart-drawer aria-hidden="true" aria-labelledby="cart-title">
+      <header>
+        <div><p class="eyebrow" data-i18n="yourSelection">Pilihanmu</p><h2 id="cart-title" data-i18n="shoppingCart">Keranjang belanja</h2></div>
+        <button class="icon-button close-button" type="button" data-close-cart aria-label="Tutup keranjang">×</button>
+      </header>
+      <div class="cart-drawer__body" data-cart-items></div>
+      <div class="cart-empty" data-cart-empty>
+        <span aria-hidden="true">♡</span><h3 data-i18n="cartEmptyTitle">Keranjangmu masih menunggu</h3><p data-i18n="cartEmptyText">Temukan koleksi yang ingin ikut pulang.</p><button class="button button--ghost" type="button" data-cart-shop data-i18n="startShopping">Mulai belanja</button>
+      </div>
+      <footer class="cart-drawer__footer" data-cart-footer hidden>
+        <div><span data-i18n="subtotal">Subtotal</span><strong data-cart-subtotal>Rp0</strong></div>
+        <p data-i18n="shippingAtCheckout">Estimasi ongkir dihitung saat checkout.</p>
+        <button class="button button--primary button--block" type="button" data-open-checkout data-i18n="continueCheckout">Lanjut checkout</button>
+      </footer>
+    </aside>
+
+    <dialog class="product-dialog" data-product-dialog aria-labelledby="product-dialog-title">
+      <button class="icon-button close-button dialog-close" type="button" data-close-product aria-label="Tutup detail produk">×</button>
+      <div class="product-dialog__grid">
+        <div class="product-dialog__image-wrap"><img data-detail-image src="/images/icon-apple.png" alt="" width="560" height="620"></div>
+        <div class="product-dialog__content">
+          <p class="eyebrow" data-detail-category></p>
+          <h2 id="product-dialog-title" data-detail-name></h2>
+          <div class="product-dialog__price"><strong data-detail-price></strong><del data-detail-compare></del></div>
+          <p data-detail-description></p>
+          <p class="stock-note" data-detail-stock></p>
+          <label><span data-i18n="chooseSize">Pilih ukuran</span><select data-detail-size></select></label>
+          <label><span data-i18n="quantity">Jumlah</span><input data-detail-quantity type="number" min="1" max="10" value="1" inputmode="numeric"></label>
+          <button class="button button--primary button--block" type="button" data-detail-add data-i18n="addToCart">Tambah ke keranjang</button>
+          <p class="microcopy" data-i18n="productMicrocopy">Butuh bantuan ukuran? Chat admin sebelum memesan.</p>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="checkout-dialog" data-checkout-dialog aria-labelledby="checkout-title">
+      <button class="icon-button close-button dialog-close" type="button" data-close-checkout aria-label="Tutup checkout">×</button>
+      <div class="checkout-dialog__heading">
+        <p class="eyebrow" data-i18n="secureOrder">Pesanan tercatat aman</p>
+        <h2 id="checkout-title" data-i18n="checkoutTitle">Selesaikan pesanan</h2>
+        <p data-i18n="checkoutIntro">Admin akan mengonfirmasi stok, pembayaran, dan ongkir final melalui WhatsApp.</p>
+      </div>
+      <div class="checkout-success" data-checkout-success hidden>
+        <span aria-hidden="true">✓</span><h3 data-i18n="successTitle">Pesanan berhasil dibuat</h3><p data-order-success-text></p><a class="button button--primary" href="#" data-order-whatsapp target="_blank" rel="noopener noreferrer" data-i18n="confirmWhatsapp">Konfirmasi via WhatsApp</a>
+      </div>
+      <form data-checkout-form>
+        <div class="checkout-layout">
+          <div class="checkout-fields">
+            <fieldset>
+              <legend data-i18n="contactDetails">Data penerima</legend>
+              <div class="form-grid">
+                <label class="field field--wide"><span data-i18n="fullName">Nama lengkap</span><input name="name" required minlength="2" maxlength="80" autocomplete="name"></label>
+                <label class="field"><span>WhatsApp</span><input name="whatsapp" required minlength="8" maxlength="24" inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx"></label>
+                <label class="field"><span>Email <small data-i18n="optional">(opsional)</small></span><input name="email" type="email" maxlength="120" autocomplete="email"></label>
+                <label class="field field--wide"><span data-i18n="address">Alamat lengkap</span><textarea name="address" required minlength="10" maxlength="300" rows="3" autocomplete="street-address"></textarea></label>
+                <label class="field"><span data-i18n="city">Kota / Kabupaten</span><input name="city" required minlength="2" maxlength="80" autocomplete="address-level2"></label>
+                <label class="field"><span data-i18n="postalCode">Kode pos</span><input name="postalCode" pattern="[0-9]{5}" maxlength="5" inputmode="numeric" autocomplete="postal-code"></label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend data-i18n="deliveryPayment">Pengiriman & pembayaran</legend>
+              <div class="form-grid">
+                <label class="field"><span data-i18n="shippingMethod">Metode pengiriman</span><select name="shippingId" required data-shipping-select></select></label>
+                <label class="field"><span data-i18n="paymentMethod">Metode pembayaran</span><select name="paymentId" required data-payment-select></select></label>
+                <label class="field field--wide"><span data-i18n="notes">Catatan <small data-i18n="optional">(opsional)</small></span><textarea name="notes" maxlength="300" rows="2"></textarea></label>
+              </div>
+            </fieldset>
+          </div>
+          <aside class="order-summary">
+            <h3 data-i18n="orderSummary">Ringkasan pesanan</h3>
+            <div data-checkout-items></div>
+            <dl><div><dt data-i18n="subtotal">Subtotal</dt><dd data-checkout-subtotal></dd></div><div><dt data-i18n="shippingEstimate">Estimasi ongkir</dt><dd data-checkout-shipping></dd></div><div class="order-summary__total"><dt data-i18n="estimatedTotal">Estimasi total</dt><dd data-checkout-total></dd></div></dl>
+            <p class="form-error" data-form-error role="alert" hidden></p>
+            <button class="button button--primary button--block" type="submit" data-submit-order><span data-i18n="placeOrder">Buat pesanan</span></button>
+            <p class="microcopy" data-i18n="checkoutMicrocopy">Belum ada pembayaran otomatis. Detail rekening dikirim setelah pesanan dikonfirmasi admin.</p>
+          </aside>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+
+    <template id="product-card-template">
+      <article class="product-card">
+        <button class="product-card__image" type="button" data-view-product><img src="" alt="" loading="lazy" width="360" height="440"><span class="product-card__badge"></span><span class="product-card__view"></span></button>
+        <div class="product-card__body"><p class="product-card__category"></p><h3></h3><div class="product-card__meta"><p class="product-card__price"><strong></strong><del></del></p><button class="product-card__add" type="button" data-card-add aria-label="Tambah ke keranjang">+</button></div></div>
+      </article>
+    </template>
+
+    <template id="cart-item-template">
+      <article class="cart-item"><img src="" alt="" width="76" height="92"><div><h3></h3><p class="cart-item__variant"></p><div class="cart-item__controls"><button type="button" data-decrease aria-label="Kurangi jumlah">−</button><span></span><button type="button" data-increase aria-label="Tambah jumlah">+</button><button class="cart-item__remove" type="button" data-remove></button></div></div><strong class="cart-item__price"></strong></article>
+    </template>
+
+    <script src="/js/store.js" defer></script>
+  </body>
+</html>

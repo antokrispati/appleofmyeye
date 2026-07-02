@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+*.log
+node_modules/
+data/orders.json
+data/users.json
+data/*.tmp
+images/uploads/*
+!images/uploads/.gitkeep
+.vercel/
+.remote-audit/
+.DS_Store
+Thumbs.db

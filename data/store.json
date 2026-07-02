@@ -1,0 +1,21 @@
+{
+  "name": "Apple of My Eye",
+  "taglineId": "Cerita hangat dalam setiap gaya",
+  "taglineEn": "Warm stories in every style",
+  "descriptionId": "Busana pilihan untuk ibu, anak, dan keluarga yang ingin tampil serasi tanpa kehilangan kenyamanan.",
+  "descriptionEn": "Thoughtful fashion for mothers, children, and families who want coordinated style without losing comfort.",
+  "email": "hello@appleofmyeye.id",
+  "whatsapp": "62819112273330",
+  "location": "Jakarta, Indonesia",
+  "instagram": "@appleofmyeye.id",
+  "shipping": [
+    { "id": "sicepat", "name": "SiCepat REG", "fee": 16000 },
+    { "id": "jnt", "name": "J&T Regular", "fee": 17000 },
+    { "id": "jne", "name": "JNE REG", "fee": 18000 },
+    { "id": "pickup", "name": "Ambil di toko", "fee": 0 }
+  ],
+  "payments": [
+    { "id": "bank_transfer", "nameId": "Transfer bank", "nameEn": "Bank transfer" },
+    { "id": "cod", "nameId": "Bayar di tempat (konfirmasi admin)", "nameEn": "Cash on delivery (admin confirmation)" }
+  ]
+}

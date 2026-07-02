@@ -1,0 +1,10 @@
+.git
+.env
+*.log
+node_modules
+test
+electronic.html
+fashion.html
+jewellery.html
+css/*.map
+js/bootstrap*

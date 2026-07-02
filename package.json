@@ -1,0 +1,20 @@
+{
+  "name": "apple-of-my-eye-store",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Storefront e-commerce Apple of My Eye berbasis Node.js.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test",
+    "check": "node --check server.js && node --check js/admin.js && node --check lib/data-store.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "@vercel/blob": "^2.5.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

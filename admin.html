@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#431726">
+    <meta name="robots" content="noindex,nofollow">
+    <title>CMS — Apple of My Eye</title>
+    <link rel="icon" href="/images/icon-apple.png" type="image/png">
+    <link rel="stylesheet" href="/css/admin.css">
+  </head>
+  <body>
+    <section class="login-view" data-login-view>
+      <div class="login-card">
+        <a class="admin-logo" href="/" aria-label="Kembali ke toko"><img src="/images/logo-apple-01.png" alt="Apple of My Eye" width="1182" height="1182"></a>
+        <div class="login-card__heading"><p class="eyebrow">Content Management System</p><h1>Masuk ke CMS</h1><p>Kelola penjualan, transaksi, katalog, dan pengguna dari satu tempat.</p></div>
+        <form data-login-form>
+          <label><span>Username</span><input name="username" required autocomplete="username" value="admin"></label>
+          <label><span>Password</span><input name="password" type="password" required autocomplete="current-password"></label>
+          <p class="form-message" data-login-message role="alert" hidden></p>
+          <button class="button button--primary" type="submit" data-login-submit>Masuk</button>
+        </form>
+        <a class="back-link" href="/">← Kembali ke toko</a>
+      </div>
+    </section>
+
+    <div class="dashboard" data-dashboard hidden>
+      <header class="admin-header">
+        <div class="admin-container admin-header__inner">
+          <a class="admin-header__brand" href="/admin" aria-label="CMS Apple of My Eye">
+            <img src="/images/logo-apple-01.png" alt="Apple of My Eye" width="1182" height="1182">
+            <span><strong>Apple of My Eye CMS</strong><small data-admin-user></small></span>
+          </a>
+          <nav class="admin-nav" aria-label="Navigasi CMS">
+            <button type="button" data-view-button="dashboard" aria-pressed="true"><span aria-hidden="true">⌂</span> Dashboard</button>
+            <button type="button" data-view-button="orders" aria-pressed="false"><span aria-hidden="true">◇</span> Transaksi</button>
+            <button type="button" data-view-button="products" aria-pressed="false"><span aria-hidden="true">▦</span> Produk</button>
+            <button type="button" data-view-button="users" aria-pressed="false" data-users-nav><span aria-hidden="true">♙</span> Pengguna</button>
+          </nav>
+          <div class="admin-header__actions">
+            <a class="button button--ghost" href="/" target="_blank" rel="noopener">Lihat toko ↗</a>
+            <button class="button button--quiet" type="button" data-logout>Keluar</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="admin-container admin-main">
+        <section class="admin-view" data-view="dashboard">
+          <div class="page-heading"><div><p class="eyebrow">Ringkasan bisnis</p><h1>Dashboard penjualan</h1><p>Performa toko dan aktivitas transaksi terbaru.</p></div><button class="button button--ghost" type="button" data-refresh-dashboard>Perbarui data</button></div>
+          <div class="stats stats--sales" aria-label="Ringkasan penjualan">
+            <article><span>Total transaksi</span><strong data-dash-orders>0</strong><small data-dash-today>0 transaksi hari ini</small></article>
+            <article><span>Omzet terkonfirmasi</span><strong data-dash-revenue>Rp0</strong><small>Paid hingga completed</small></article>
+            <article><span>Menunggu tindakan</span><strong data-dash-pending>0</strong><small>Pending dan confirmed</small></article>
+            <article><span>Rata-rata pesanan</span><strong data-dash-average>Rp0</strong><small data-dash-products>0 produk aktif</small></article>
+          </div>
+          <div class="dashboard-grid">
+            <section class="dashboard-card sales-chart" aria-labelledby="sales-chart-title">
+              <header><div><h2 id="sales-chart-title">Penjualan 7 hari terakhir</h2><p>Omzet dari transaksi berstatus dibayar atau diproses.</p></div></header>
+              <div class="chart" data-sales-chart aria-label="Grafik penjualan tujuh hari"></div>
+            </section>
+            <section class="dashboard-card status-overview" aria-labelledby="status-title">
+              <header><div><h2 id="status-title">Status transaksi</h2><p>Distribusi status pesanan.</p></div></header>
+              <div data-status-overview></div>
+            </section>
+          </div>
+          <section class="dashboard-card recent-orders" aria-labelledby="recent-orders-title">
+            <header><div><h2 id="recent-orders-title">Transaksi terbaru</h2><p>Pesanan terakhir yang masuk ke toko.</p></div><button class="text-button" type="button" data-go-orders>Lihat semua →</button></header>
+            <div data-recent-orders></div>
+            <div class="empty-state empty-state--compact" data-recent-empty hidden><span>◇</span><p>Belum ada transaksi.</p></div>
+          </section>
+        </section>
+
+        <section class="admin-view" data-view="orders" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Penjualan</p><h1>Transaksi</h1><p>Pantau detail pesanan dan perbarui status pemrosesan.</p></div></div>
+          <section class="panel" aria-labelledby="order-list-title">
+            <header class="panel__header"><div><h2 id="order-list-title">Daftar transaksi</h2><p data-order-count>Memuat transaksi...</p></div><div class="panel__filters"><select data-order-status-filter aria-label="Filter status transaksi"><option value="all">Semua status</option></select><input type="search" data-order-search placeholder="Cari ID, nama, atau WhatsApp..." aria-label="Cari transaksi"></div></header>
+            <div class="order-list" data-order-list></div>
+            <div class="empty-state" data-order-empty hidden><span>◇</span><h3>Transaksi tidak ditemukan</h3><p>Ubah pencarian atau filter status.</p></div>
+          </section>
+        </section>
+
+        <section class="admin-view" data-view="products" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Katalog</p><h1>Kelola produk</h1><p>Perubahan yang disimpan langsung tampil pada storefront.</p></div><button class="button button--primary" type="button" data-add-product>+ Tambah produk</button></div>
+          <section class="stats" aria-label="Ringkasan katalog">
+            <article><span>Total produk</span><strong data-stat-products>0</strong><small>Produk aktif di katalog</small></article>
+            <article><span>Total stok</span><strong data-stat-stock>0</strong><small>Unit dari seluruh produk</small></article>
+            <article><span>Stok menipis</span><strong data-stat-low>0</strong><small>Produk dengan stok ≤ 5</small></article>
+            <article><span>Produk unggulan</span><strong data-stat-featured>0</strong><small>Ditandai sebagai featured</small></article>
+          </section>
+          <section class="panel" aria-labelledby="product-list-title">
+            <header class="panel__header"><div><h2 id="product-list-title">Daftar produk</h2><p data-product-count>Memuat katalog...</p></div><input type="search" data-admin-search placeholder="Cari nama, ID, atau kategori..." aria-label="Cari produk"></header>
+            <div class="product-list" data-product-list></div>
+            <div class="empty-state" data-admin-empty hidden><span>◇</span><h3>Produk tidak ditemukan</h3><p>Ubah kata pencarian atau tambahkan produk baru.</p></div>
+          </section>
+        </section>
+
+        <section class="admin-view" data-view="users" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Akses CMS</p><h1>Manajemen pengguna</h1><p>Atur akun dan hak akses tim pengelola toko.</p></div><button class="button button--primary" type="button" data-add-user>+ Tambah pengguna</button></div>
+          <div class="role-guide"><article><strong>Owner</strong><span>Semua akses, termasuk owner lain.</span></article><article><strong>Admin</strong><span>Produk, transaksi, dan pengguna non-owner.</span></article><article><strong>Editor</strong><span>Produk dan status transaksi.</span></article></div>
+          <section class="panel" aria-labelledby="user-list-title">
+            <header class="panel__header"><div><h2 id="user-list-title">Daftar pengguna</h2><p data-user-count>Memuat pengguna...</p></div><input type="search" data-user-search placeholder="Cari nama, username, atau role..." aria-label="Cari pengguna"></header>
+            <div class="user-list" data-user-list></div>
+            <div class="empty-state" data-user-empty hidden><span>♙</span><h3>Pengguna tidak ditemukan</h3></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <dialog class="editor-dialog" data-editor-dialog aria-labelledby="editor-title">
+      <form data-product-form>
+        <header class="editor-dialog__header"><div><p class="eyebrow">Editor katalog</p><h2 id="editor-title" data-editor-title>Tambah produk</h2></div><button class="icon-button" type="button" data-close-editor aria-label="Tutup editor">×</button></header>
+        <div class="editor-dialog__body">
+          <section class="editor-section editor-section--image"><div class="image-preview"><img src="/images/icon-apple.png" alt="Pratinjau gambar produk" data-image-preview></div><div><h3>Gambar produk</h3><p>PNG, JPG, atau WebP. Maksimal 2 MB.</p><label class="upload-button"><span>Pilih gambar</span><input type="file" data-image-file accept="image/png,image/jpeg,image/webp"></label><label class="field"><span>Path/URL gambar</span><input name="image" required placeholder="/images/nama-file.png"></label></div></section>
+          <section class="editor-section"><h3>Informasi utama</h3><div class="form-grid"><label class="field"><span>Nama produk — Indonesia</span><input name="nameId" required minlength="2" maxlength="100"></label><label class="field"><span>Product name — English</span><input name="nameEn" required minlength="2" maxlength="100"></label><label class="field field--wide"><span>Deskripsi — Indonesia</span><textarea name="descriptionId" required minlength="10" maxlength="500" rows="3"></textarea></label><label class="field field--wide"><span>Description — English</span><textarea name="descriptionEn" required minlength="10" maxlength="500" rows="3"></textarea></label></div></section>
+          <section class="editor-section"><h3>Kategori & penanda</h3><div class="form-grid form-grid--three"><label class="field"><span>Kode kategori</span><input name="category" required placeholder="kids"></label><label class="field"><span>Kategori — Indonesia</span><input name="categoryId" required placeholder="Anak"></label><label class="field"><span>Category — English</span><input name="categoryEn" required placeholder="Kids"></label><label class="field"><span>Badge — Indonesia</span><input name="badgeId" maxlength="40" placeholder="Baru"></label><label class="field"><span>Badge — English</span><input name="badgeEn" maxlength="40" placeholder="New"></label><label class="checkbox-field"><input name="featured" type="checkbox"><span>Produk unggulan</span></label></div></section>
+          <section class="editor-section"><h3>Harga, stok & ukuran</h3><div class="form-grid form-grid--three"><label class="field"><span>Harga jual (Rp)</span><input name="price" type="number" required min="0" step="1000"></label><label class="field"><span>Harga sebelum diskon (Rp)</span><input name="compareAtPrice" type="number" min="0" step="1000" value="0"></label><label class="field"><span>Stok</span><input name="stock" type="number" required min="0" step="1"></label><label class="field field--wide"><span>Ukuran</span><input name="sizes" required placeholder="S, M, L, XL"><small>Pisahkan setiap ukuran dengan koma.</small></label></div></section>
+          <p class="form-message" data-editor-message role="alert" hidden></p>
+        </div>
+        <footer class="editor-dialog__footer"><button class="button button--quiet" type="button" data-cancel-editor>Batal</button><button class="button button--primary" type="submit" data-save-product>Simpan produk</button></footer>
+      </form>
+    </dialog>
+
+    <dialog class="order-dialog" data-order-dialog aria-labelledby="order-dialog-title">
+      <header class="editor-dialog__header"><div><p class="eyebrow">Detail transaksi</p><h2 id="order-dialog-title" data-order-dialog-id></h2></div><button class="icon-button" type="button" data-close-order aria-label="Tutup detail transaksi">×</button></header>
+      <div class="order-dialog__body"><div class="order-customer" data-order-customer></div><section><h3>Item pesanan</h3><div data-order-items></div></section><section><h3>Ringkasan pembayaran</h3><dl class="order-totals" data-order-totals></dl></section><section><h3>Riwayat status</h3><div class="status-history" data-status-history></div></section><form data-order-status-form><div class="form-grid"><label class="field"><span>Status baru</span><select name="status" required data-order-status-select></select></label><label class="field"><span>Catatan internal</span><input name="note" maxlength="200" placeholder="Opsional"></label></div><p class="form-message" data-order-message hidden></p><button class="button button--primary" type="submit">Perbarui status</button></form></div>
+    </dialog>
+
+    <dialog class="user-dialog" data-user-dialog aria-labelledby="user-dialog-title">
+      <form data-user-form><header class="editor-dialog__header"><div><p class="eyebrow">Akses CMS</p><h2 id="user-dialog-title" data-user-dialog-title>Tambah pengguna</h2></div><button class="icon-button" type="button" data-close-user aria-label="Tutup editor pengguna">×</button></header><div class="editor-dialog__body"><div class="form-grid"><label class="field"><span>Nama lengkap</span><input name="name" required minlength="2" maxlength="80"></label><label class="field"><span>Username</span><input name="username" required minlength="3" maxlength="40" pattern="[a-z0-9._-]+"></label><label class="field"><span>Role</span><select name="role" required><option value="editor">Editor</option><option value="admin">Admin</option><option value="owner">Owner</option></select></label><label class="field"><span>Password <small data-user-password-hint>minimal 10 karakter</small></span><input name="password" type="password" minlength="10" autocomplete="new-password"></label><label class="checkbox-field field--wide"><input name="active" type="checkbox" checked><span>Akun aktif</span></label></div><p class="form-message" data-user-message hidden></p></div><footer class="editor-dialog__footer"><button class="button button--quiet" type="button" data-cancel-user>Batal</button><button class="button button--primary" type="submit">Simpan pengguna</button></footer></form>
+    </dialog>
+
+    <div class="toast" data-admin-toast role="status" aria-live="polite" hidden></div>
+
+    <template id="admin-product-template"><article class="admin-product"><img src="" alt="" width="78" height="88"><div class="admin-product__identity"><span class="admin-product__id"></span><h3></h3><p></p></div><div class="admin-product__metric"><span>Harga</span><strong data-product-price></strong></div><div class="admin-product__metric"><span>Stok</span><strong data-product-stock></strong></div><div class="admin-product__actions"><button type="button" data-edit-product>Edit</button><button type="button" data-delete-product>Hapus</button></div></article></template>
+    <template id="order-row-template"><article class="order-row"><div><span data-order-id></span><strong data-order-customer-name></strong><small data-order-date></small></div><div><span>Total</span><strong data-order-total></strong></div><span class="status-badge" data-order-status></span><button type="button" data-view-order>Detail</button></article></template>
+    <template id="user-row-template"><article class="user-row"><div class="user-avatar" data-user-avatar></div><div><strong data-user-name></strong><span data-user-username></span></div><span class="role-badge" data-user-role></span><span class="account-state" data-user-state></span><div><button type="button" data-edit-user>Edit</button><button type="button" data-delete-user>Hapus</button></div></article></template>
+
+    <script src="/js/admin.js" defer></script>
+  </body>
+</html>
