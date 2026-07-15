@@ -8,7 +8,9 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "node --test",
-    "check": "node --check server.js && node --check js/admin.js && node --check lib/data-store.js"
+    "check": "node --check server.js && node --check js/admin.js && node --check lib/data-store.js && node --check scripts/reset-cms-password.js",
+    "cms:reset-password": "node scripts/reset-cms-password.js",
+    "cms:reset": "node scripts/reset-cms-password.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

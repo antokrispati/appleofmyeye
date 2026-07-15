@@ -15,6 +15,22 @@ npm start
 
 Buka `http://localhost:3000` untuk toko dan `http://localhost:3000/admin` untuk CMS. Untuk pengembangan dengan restart otomatis gunakan `npm run dev`; untuk pengujian gunakan `npm test`.
 
+## Reset password CMS
+
+Jika lupa password CMS lokal, jalankan PowerShell berikut. Password baru akan diminta di terminal dan tidak ditampilkan saat diketik:
+
+```powershell
+cd "E:\xampp\htdocs\appleofmyeye"
+$env:CMS_RESET_USERNAME="admin"
+npm run cms:reset-password
+```
+
+Untuk mereset akun yang sudah ada, ganti `CMS_RESET_USERNAME` dengan username akun tersebut, misalnya `krispati`. Perintah ini akan membuat akun `owner` baru bila username belum ada, atau memperbarui password akun lama bila username sudah ada.
+
+Jika terminal tidak bisa meminta password interaktif, tetapkan sementara `$env:CMS_RESET_PASSWORD`, jalankan perintah reset, lalu hapus dengan `Remove-Item Env:CMS_RESET_PASSWORD`.
+
+Di Vercel, cara tercepat untuk akses darurat adalah mengganti `ADMIN_PASSWORD` dan `SESSION_SECRET` di Environment Variables lalu redeploy. Setelah berhasil masuk sebagai owner, ubah password pengguna permanen dari menu User Management.
+
 ## Fitur CMS
 
 - Dashboard omzet, jumlah transaksi, transaksi menunggu, rata-rata pesanan, grafik tujuh hari, dan stok menipis.
